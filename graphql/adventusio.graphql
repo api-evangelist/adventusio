@@ -1,0 +1,894 @@
+# Adventus.io GraphQL schema (SDL)
+#
+# generated: '2026-09-09'
+# method: probed
+# source: https://api.adventus.io/graphql (anonymous introspection, HTTP 200)
+#
+# Rendered from the provider's own live introspection response, saved verbatim
+# alongside this file as graphql/adventusio-introspection.json. Nothing here is
+# authored by API Evangelist -- every type, field and argument below came back
+# from the server. Introspection is OPEN on this endpoint; the DATA behind it is
+# not (queries touching students/orders/institutions return
+# extensions.code UNAUTHENTICATED until a bearer token from the userLogin or
+# studentLogin mutation is supplied). Reference queries -- countries, languages,
+# studyLevels, gradingSystems -- answer anonymously.
+#
+# Ownership: the endpoint is api.adventus.io, on the company's own registrable
+# domain, and the schema is unambiguously Adventus.io's own product surface
+# (Student, Institution, StudyLevel, ConnectInvite, intake_control_*, and an
+# upstream REST origin of https://app.adventus.io/api/v2/ disclosed in the
+# server's own error payloads).
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+enum ConnectActionInput {
+  ACCEPT
+  DECLINE
+}
+
+enum ConnectSource {
+  EMAIL
+  WEB
+}
+
+enum NotificationType {
+  MESSAGE
+  NEWS
+  ALERT
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+"Sort schedule by Ascending or Descending order"
+enum intake_control_SortOrder {
+  ASC
+  DESC
+}
+
+input AcademicAchievementInput {
+  studyLevel: String!
+  gradingSystemCountryId: Int!
+  gradingSystemId: Int!
+  gradingSystemScore: JSON!
+}
+
+input NotificationSettingInput {
+  id: Int!
+  messages: Boolean!
+  alerts: Boolean!
+  news: Boolean!
+}
+
+input PaginationInput {
+  offset: Int!
+  limit: Int!
+}
+
+input ResetPasswordInput {
+  email: String!
+  password: String!
+  passwordConfirmation: String!
+  token: String!
+}
+
+input SortInput {
+  fieldName: String!
+  order: SortOrder!
+}
+
+input StudentInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  callingCode: String!
+  phone: String!
+  countryId: Int!
+  residenceCountryId: Int
+  preferredLanguageId: Int!
+  leadSource: String
+  counsellorCallingCode: String!
+  counsellorContact: String!
+}
+
+input StudentNoteInput {
+  noteTypeId: String!
+  body: String!
+}
+
+"Payload to cancel existing schedule"
+input intake_control_CancelScheduleInput {
+  "The schedule ID"
+  scheduleId: Int!
+}
+
+"The country and regions to be applied to the schedule"
+input intake_control_CountryAndRegionsInput {
+  "The country ID to be applied to the schedule"
+  countryId: Int
+  "The list of region IDs to be applied to the schedule"
+  regionIds: [Int]
+}
+
+"Payload to create a new schedule"
+input intake_control_CreateScheduleInput {
+  "The institution that the course belongs to"
+  institutionId: Int!
+  "The course ID"
+  courseId: Int
+  "The intake ID for intake level schedule - optional"
+  intakeId: Int
+  "The schedule's closing date"
+  closingDate: String
+  "The schedule's next open date"
+  nextOpenDate: String
+  "The country and regions to be applied to the schedule"
+  countries: [intake_control_CountryAndRegionsInput]
+  "Recruiter Tenant id for recruiter level schedule"
+  tenantId: Int
+}
+
+"The Intake from date input"
+input intake_control_IntakeResponseInput {
+  "The Course's ID"
+  courseId: Int!
+  "Intake term start date"
+  termStart: String
+}
+
+"""
+Additional variables to filter applicable schedules
+
+For example:
+If countryId is provided, then only schedules relevant to the countryId is considered when determining the status.
+"""
+input intake_control_MetadataInput {
+  countryId: Int
+  regionId: Int
+  tenantId: Int
+  courseMetaData: [intake_control_courseMetaData]
+}
+
+"Pagination Inputs for course schedule list"
+input intake_control_PaginationInput {
+  offset: Int!
+  limit: Int!
+}
+
+"Sort inputs for course schedule list"
+input intake_control_SortInput {
+  fieldName: String!
+  order: intake_control_SortOrder!
+}
+
+"course id and institution id to determine course's institution"
+input intake_control_courseMetaData {
+  courseId: Int!
+  institutionId: Int!
+}
+
+type Alert {
+  id: Int!
+  title: String!
+  body: String!
+  type: String
+  url: String
+  read: Boolean
+  student: Student
+  createdAt: String
+}
+
+type Application {
+  id: Int!
+  orderId: String!
+  course: String!
+  institution: String!
+  status: String
+  currentMilestone: String!
+  action: String
+  actionLabel: String!
+  currentMilestoneLabel: String!
+  updatedAt: String!
+  studentId: Int
+  studentFirstName: String
+  studentLastName: String
+}
+
+type ApplicationList {
+  applications: [Application]
+}
+
+type ConnectInstitution {
+  id: Int!
+  name: String!
+}
+
+type ConnectInvite {
+  id: String!
+  student: ConnectStudent!
+  institution: ConnectInstitution!
+  createdAt: String!
+  updatedAt: String!
+  status: String!
+}
+
+type ConnectInviteList {
+  connectInvites: [ConnectInvite]
+  totalCount: Int!
+  offset: Int!
+  limit: Int!
+}
+
+type ConnectStudent {
+  id: Int!
+  firstName: String!
+  lastName: String!
+}
+
+type Country {
+  id: Int!
+  name: String!
+  cca2: String
+  callingCode: String
+  signupEnabled: Boolean!
+}
+
+type CourseStats {
+  instituteId: Int
+  courseId: Int
+  courseName: String
+  oldSearchAppearances: Int
+  newSearchAppearances: Int
+  oldPageClicks: Int
+  newPageClicks: Int
+  oldShortlistedCourses: Int
+  newShortlistedCourses: Int
+  oldCountryRanks: Int
+  newCountryRanks: Int
+  searchAppearancesTrend: Int
+  pageClicksTrend: Int
+  shortlistedCoursesTrend: Int
+  countryRanksTrend: Int
+}
+
+type CourseStatsList {
+  courseStats: [CourseStats]
+  totalCount: Int
+  offset: Int
+  limit: Int
+}
+
+type CurrentMilestone {
+  isActive: Boolean!
+  name: String!
+}
+
+type DeleteStudentDocumentResponse {
+  status: String
+  message: String
+}
+
+type DeviceToken {
+  id: Int!
+  userId: Int!
+  deviceToken: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type GradingSystem {
+  id: Int!
+  name: String!
+  scaleType: String
+  numericMin: Float
+  adventusGradeMin: Float
+  numericMax: Float
+  adventusGradeMax: Float
+  numericIncrement: Float
+  adventusGradeIncrement: Float
+  numericPassOrFailCutOff: Float
+  adventusGradePassOrFailCutOff: Float
+  numericRankingMethod: String
+  gradingSystemTable: [GradingSystemTable]
+  gradingSystemScore: [GradingSystemScore]
+  notes: String
+  "TODO replace this with country type in future"
+  country: String!
+  level: String!
+  code: String!
+  hidden: Int!
+  qaStatus: String
+  qaNotes: String
+  isCollectMultipleNumericScores: Float
+}
+
+type GradingSystemScore {
+  key: String
+  hint: String
+  label: String
+  placeholder: String
+}
+
+type GradingSystemTable {
+  passOrFailCutOff: String!
+  rank: Float!
+  tier: String!
+  grade: String!
+}
+
+type InstituteStats {
+  instituteId: Int
+  oldSearchAppearances: Int
+  newSearchAppearances: Int
+  oldPageClicks: Int
+  newPageClicks: Int
+  oldShortlistedCourses: Int
+  newShortlistedCourses: Int
+  oldCountryRanks: Int
+  newCountryRanks: Int
+  searchAppearancesTrend: Int
+  pageClicksTrend: Int
+  shortlistedCoursesTrend: Int
+  countryRanksTrend: Int
+}
+
+type Institution {
+  id: Int!
+  name: String!
+}
+
+type Language {
+  id: Int!
+  name: String!
+}
+
+type Message {
+  id: Int!
+  studentId: Int!
+  student: Student
+  title: String!
+  body: String!
+  enrolledCourse: String
+  subject: String
+  iconInitials: String!
+  url: String
+  read: Boolean
+  senderRole: String
+  avatar: String
+  threadableType: String!
+  threadableId: Int!
+  threadId: Int!
+  createdAt: String
+  rawCreatedAt: String
+}
+
+type MessageThreads {
+  messages: [ThreadMessage]
+}
+
+type Milestone {
+  id: Int!
+  name: String!
+  current_milestone: CurrentMilestone!
+}
+
+type MilestoneDetails {
+  name: String!
+  value: String
+  updatedAt: String
+  enabled: Boolean!
+}
+
+type Mutation {
+  _: String
+  uploadStudentDocument(studentId: Int!, fileName: String!, description: String, section: String, category: String!, documentTypeId: Int!, data: JSON, document: Upload!): StudentDocument
+  uploadMyDocument(fileName: String!, description: String, section: String, category: String!, documentTypeId: Int!, data: JSON, document: Upload!): StudentDocument
+  deleteStudentDocument(studentId: Int!, documentId: Int!): DeleteStudentDocumentResponse
+  userLogin(email: String!, password: String!): UserAuthPayload
+  userForgotPassword(email: String!): String
+  userResetPassword(input: ResetPasswordInput!): String
+  userLogout: String
+  studentLogin(email: String!, password: String!): StudentAuthPayload
+  studentForgotPassword(email: String!): String
+  studentResetPassword(input: ResetPasswordInput!): String
+  studentLogout: String
+  agreeTermsAndCondition(version: String!, channel: String!): Boolean
+  markMyNotifications(notificationType: NotificationType!, markAll: Boolean! = false, id: Int, isRead: Boolean!): String
+  clearMyNotifications(notificationType: NotificationType!, clearAll: Boolean! = false, id: Int): String
+  clearMyUnseenNotificationCount(notificationType: NotificationType!): String
+  updateMyNotificationSetting(notificationSetting: NotificationSettingInput): String
+  "Register device token for mobile push notifications (firebase)"
+  registerDeviceToken(deviceToken: String!): DeviceToken
+  addStudent(student: StudentInput): Student
+  updateStudent(id: Int!, student: StudentInput): Student
+  addStudentNote(studentId: Int!, note: StudentNoteInput): StudentNote
+  sendStudentMessage(studentId: Int!, body: String): StudentMessage
+  sendThreadMessage(threadType: String!, threadId: Int!, message: String): ThreadMessage
+  updateMyStudentProfile(student: StudentInput): Student
+  updateStudentAcademicAchievement(studentId: Int!, academicAchievement: AcademicAchievementInput): Student
+  updateMyAcademicAchievement(academicAchievement: AcademicAchievementInput): Student
+  markThreadReadStatus(threadType: String!, threadId: Int!, read: Boolean = true): Boolean
+  confirmConnectInvite(id: ID!, status: ConnectActionInput!, source: ConnectSource): ConnectInvite
+  """
+  Create a new schedule
+
+Auth: This is restricted to IDR user only
+  """
+  intake_control_createSchedule(input: intake_control_CreateScheduleInput!): intake_control_Schedule
+  """
+  Cancel a schedule by ID
+
+Auth: This is restricted to IDR user only
+  """
+  intake_control_cancelSchedule(input: intake_control_CancelScheduleInput!): intake_control_Schedule
+}
+
+type News {
+  id: Int!
+  title: String!
+  body: String!
+  type: String
+  url: String
+  read: Boolean
+  createdAt: String
+}
+
+type NotificationSetting {
+  id: Int!
+  messages: Boolean!
+  alerts: Boolean!
+  news: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type OrderMilestones {
+  studentId: Int
+  studentFirstName: String
+  studentLastName: String
+  studentShowUrl: String
+  studentEmail: String
+  studentPhone: String
+  studentCallingCode: String
+  course: String
+  institution: String
+  currentMilestone: String!
+  currentMilestoneLabel: String!
+  status: String
+  updatedAt: String
+  milestones: [MilestoneDetails]
+}
+
+type OrderSummary {
+  id: Int!
+  courseId: Int!
+  course: String!
+  milestone: Milestone
+  "course: Course"
+  applicationId: String!
+  institution: String!
+  institutionLogoUrl: String!
+  countryFlagUrl: String!
+  "institution: Institution"
+  showCaseUrl: String
+  country: String!
+  country_id: Int!
+  cca2: String!
+  countryDetail: Country
+  savedDate: String
+  shortlistDate: String
+  preferredIntakeDate: String
+  accommodationLink: String
+  messages: ThreadMessageList
+}
+
+type OrderSummaryList {
+  orderSummaryList: [OrderSummary]
+  firstSubmission: String
+  firstPassQcv: String
+  accommodationProviderLink: String
+  studentId: Int!
+}
+
+type PaginationResponse {
+  limit: Int
+  offset: Int
+  totalCount: Int
+}
+
+type Query {
+  _: String
+  country(id: Int): Country
+  countries(hasCallingCode: Boolean): [Country]!
+  languages: [Language!]!
+  language(id: Int): Language
+  studentDocumentTypes(studentId: Int!): [StudentDocumentSection]
+  studentDocuments(studentId: Int!): [StudentDocument]
+  "TODO: Replace this to studentDocuments"
+  studentDocumentsV2(studentId: Int!, page: Int! = 1, keyword: String): StudentDocumentList
+  "Student specific queries (context from token)"
+  myDocumentTypes: [StudentDocumentSection]
+  myDocuments: [StudentDocument]
+  myDocumentsV2(page: Int! = 1, keyword: String): StudentDocumentList
+  user(id: Int): User
+  myAccountManagers: [User]
+  myTeamMembers: [User]
+  termsAndCondition: TermsAndCondition
+  institution(id: Int): Institution
+  studyLevel(studyLevelId: Int, studyLevelName: String): StudyLevel
+  studyLevels: [StudyLevel!]
+  gradingSystems(countryId: Int): [GradingSystem!]
+  gradingSystem(gradingId: Int!): GradingSystem!
+  myMessages(pagination: PaginationInput): [Message]
+  myNews(pagination: PaginationInput): [News]
+  myAlerts(pagination: PaginationInput): [Alert]
+  myNotificationSetting: NotificationSetting
+  myUnseenNotificationCount: UnreadNotificationCount
+  "TODO: Standardise all pagination"
+  students(page: Int! = 1, keyword: String, status: String): StudentList
+  orders(keyword: String, style: String, sort: String, filter: String, page: Int! = 1): [StudentsOrders]
+  orderMilestones(orderId: String): OrderMilestones
+  student(id: Int): Student
+  studentNotes(studentId: Int!): [StudentNote]
+  studentActivities(studentId: Int!): [StudentActivity]
+  studentOrderSummary(studentId: Int!): OrderSummaryList
+  studentNoteTypes: [StudentNoteType!]!
+  studentLeadSource: [String!]!
+  studentMessages(studentId: Int!): [StudentMessage]
+  threadMessageList(type: String!, id: Int!, offset: Int = 0, limit: Int = 10): ThreadMessageList
+  "Student specific types (context from token)"
+  myStudentProfile: Student
+  """
+  """
+Get agent details for student
+"""
+  """
+  myAgent: User
+  myOrderSummary: OrderSummaryList
+  instituteStats(instituteId: Int!): [InstituteStats]
+  courseStats(instituteId: Int!, search: String = null, paginate: PaginationInput, sort: SortInput): CourseStatsList
+  pendingConnectCount(accessToken: String!): Int!
+  connectInvites(accessToken: String!, search: String, pagination: PaginationInput, sort: SortInput): ConnectInviteList
+  "Test Query"
+  intake_control_hello: String
+  "List schedule by course ID"
+  intake_control_listSchedule(courseId: Int, institutionId: Int, paginate: intake_control_PaginationInput, sort: intake_control_SortInput): intake_control_CourseScheduleList
+  "Show schedule status by course ID"
+  intake_control_getStatus(courseId: [Int]!, metadata: intake_control_MetadataInput): [intake_control_ControlStatus]
+  "Show intake for course from date"
+  intake_control_getIntakeForCourse(intakeRequest: [intake_control_IntakeResponseInput]): [intake_control_IntakeResponse]
+}
+
+type SocialLink {
+  account: String!
+  url: String!
+}
+
+type Student {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  status: String!
+  email: String
+  callingCode: String
+  phone: String
+  phase: String
+  firstSubmissionDate: String
+  preferredLanguage: Language
+  country: Country
+  residenceCountry: Country
+  counsellorCallingCode: String
+  counsellorContact: String
+  notes: [StudentNote]
+  activities: [StudentActivity]
+  hasShortlistedCourse: Boolean!
+  orderSummary: OrderSummaryList
+  agent: User
+  leadSource: String
+  gradingStudyLevel: StudyLevel
+  gradingCountry: Country
+  gradingSystem: GradingSystem
+  gradingScore: JSON
+  showUrl: String
+  createdAt: String
+  updatedAt: String
+}
+
+type StudentActivity {
+  id: Int
+  type: String!
+  body: String!
+  createdAt: String
+}
+
+type StudentAuthPayload {
+  tokenType: String!
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  student: Student!
+}
+
+type StudentDocument {
+  id: Int!
+  fileName: String
+  originalName: String
+  storedName: String
+  url: String
+  description: String
+  section: String
+  category: String!
+  type: String
+  documentType: StudentDocumentType
+  tags: String
+  size: Int
+  mimetype: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type StudentDocumentCategory {
+  name: String!
+  documentTypes: [StudentDocumentType]
+}
+
+type StudentDocumentList {
+  studentDocuments: [StudentDocument]
+  perPage: Int!
+  from: Int
+  to: Int
+  currentPage: Int!
+  lastPage: Int!
+  total: Int
+}
+
+type StudentDocumentSection {
+  section: String!
+  categories: [StudentDocumentCategory]
+}
+
+type StudentDocumentType {
+  id: Int!
+  name: String!
+  description: String
+  institution: Institution
+  received: Boolean!
+  required: Boolean!
+  documents: [StudentDocument]
+  allowDeleteDocument: Boolean
+}
+
+type StudentList {
+  students: [Student]
+  perPage: Int!
+  from: Int
+  to: Int
+  currentPage: Int!
+  lastPage: Int!
+  total: Int
+}
+
+type StudentMessage {
+  id: Int!
+  user: User!
+  student: Student!
+  isMe: Boolean!
+  type: String
+  body: String!
+  funnelStep: String
+  createdAt: String
+}
+
+type StudentNote {
+  id: Int!
+  user: User!
+  student: Student!
+  isMe: Boolean!
+  type: String!
+  body: String!
+  funnelStep: String
+  createdAt: String
+}
+
+type StudentNoteType {
+  id: String!
+  name: String!
+}
+
+type StudentsOrders {
+  action: String
+  status: String
+  studentId: Int
+  studentFirstName: String
+  studentLastName: String
+  studentOrders: [Application]
+}
+
+type StudyLevel {
+  id: Int!
+  name: String!
+  ieltsMinOverall: Float!
+  ieltsMinBand: Float!
+  groupValue: Float!
+}
+
+type Tenant {
+  id: Int!
+  workspaceName: String!
+  email: String
+  callingCode: String!
+  phone: String
+  addressLine1: String
+  addressLine2: String
+  postcode: String
+  state: String
+  city: String
+  country: String
+  website: String
+  socialLinks: [SocialLink]
+}
+
+type TermsAndCondition {
+  id: Int!
+  version: String!
+  termsAndCondition: String!
+  status: String!
+  publishedAt: String!
+}
+
+type ThreadMessage {
+  id: Int!
+  user: User
+  senderUid: Int
+  isMe: Boolean!
+  type: String
+  body: String!
+  read: Boolean!
+  funnelStep: String
+  createdAt: String
+  createdAtText: String
+}
+
+type ThreadMessageList {
+  messages: [ThreadMessage]
+  unreadCount: Int!
+  chatMigrationTimestamp: String
+}
+
+type Threads {
+  messages: [ThreadMessage]
+}
+
+type UnreadNotificationCount {
+  messages: Int!
+  alerts: Int!
+  news: Int!
+}
+
+type User {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  email: String!
+  callingCode: String
+  phone: String
+  jobTitle: String
+  tenant: Tenant!
+}
+
+type UserAuthPayload {
+  tokenType: String!
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  user: User!
+}
+
+"The control status of a course"
+type intake_control_ControlStatus {
+  courseId: Int!
+  courseLevel: intake_control_CourseLevel
+  intakeLevels: [intake_control_IntakeLevel]
+  "The list of metadata sent to the API, as key and value pairs"
+  receivedMetadata: [intake_control_MetadataOutput]
+}
+
+"The country and regions to be applied to the schedule"
+type intake_control_Country {
+  "The country ID to be applied to the schedule"
+  countryId: Int
+  "The list of region IDs to be applied to the schedule"
+  regionIds: [Int]
+}
+
+"The course level status and it's current schedule"
+type intake_control_CourseLevel {
+  closed: Boolean
+  currentSchedule: intake_control_CurrentSchedule
+}
+
+"The course schedule list"
+type intake_control_CourseScheduleList {
+  data: [intake_control_Schedule]
+  total: Int
+  offset: Int
+  limit: Int
+}
+
+"The currently active schedule"
+type intake_control_CurrentSchedule {
+  "The schedule's ID"
+  id: Int!
+  "The schedule's closing date"
+  closingDate: String!
+  "The schedule's next open date"
+  nextOpenDate: String
+}
+
+"The intake level status and it's current schedule"
+type intake_control_IntakeLevel {
+  intakeId: Int!
+  closed: Boolean
+  currentSchedule: intake_control_CurrentSchedule
+}
+
+"The Intake from date"
+type intake_control_IntakeResponse {
+  "The Course's ID"
+  courseId: Int!
+  "The Intake ID"
+  intakeId: Int
+  "Intake term start date"
+  termStart: String
+  "The Intake from date error object"
+  errors: intake_control_errorObject
+}
+
+"Key and value of the metadata provided to the get status API for verification"
+type intake_control_MetadataOutput {
+  key: String
+  value: String
+}
+
+"A schedule to close application to a course"
+type intake_control_Schedule {
+  "The schedule's ID"
+  id: Int!
+  "The user that created this schedule"
+  userId: Int!
+  "The institution that the course belongs to"
+  institutionId: Int!
+  "The course ID"
+  courseId: Int
+  "The intake ID for intake level schedule - optional"
+  intakeId: Int
+  "The schedule's closing date"
+  closingDate: String!
+  "The schedule's next open date"
+  nextOpenDate: String
+  "The schedule's cancel date"
+  cancelledDate: String
+  "The schedule's associated countries"
+  countries: [intake_control_Country]
+  "Recruiter Tenant id for recruiter level schedule"
+  tenantId: Int
+}
+
+"The Intake from date error object"
+type intake_control_errorObject {
+  "The Course's ID"
+  course_id: String
+  "The Term Start Date"
+  term_start: String
+  "The Intake ID"
+  intake_id: String
+}
+
+scalar JSON
+
+scalar Upload

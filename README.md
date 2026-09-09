@@ -1,4 +1,4 @@
-# Adventusio
+# Adventus.io
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,5 +64,29 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Adventusio is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://equityzen.com/company/adventusio
+Adventus.io operates an international student recruitment marketplace connecting education
+institutions, recruitment agents and students. Recruiters manage student records, documents,
+academic achievements, applications and orders through a single platform; institutions publish
+courses and intakes and receive applications back.
+
+## API surface
+
+- **GraphQL** — `https://api.adventus.io/graphql`, 47 queries and 30 mutations across 99 types.
+  Anonymous introspection is enabled, so the full contract is machine-readable without
+  credentials; it is saved here as [`graphql/adventusio.graphql`](graphql/adventusio.graphql)
+  (SDL) and [`graphql/adventusio-introspection.json`](graphql/adventusio-introspection.json)
+  (the verbatim introspection response).
+- **No OpenAPI, no AsyncAPI, no gRPC, no WSDL, no MCP server and no agent card** were found. Each
+  was probed on every host this record knows; the results are recorded in
+  [`well-known/adventusio-well-known.yml`](well-known/adventusio-well-known.yml) and
+  [`mcp/adventusio-mcp.yml`](mcp/adventusio-mcp.yml).
+- **No developer portal, documentation, SDK, CLI, sandbox, changelog, status page or published
+  rate limits.** Credentials are issued with an Adventus partner account; there is no self-serve
+  API key.
+
+Reference data (`countries`, `languages`, `studyLevels`, `gradingSystems`) answers anonymously.
+Everything else returns a GraphQL error with `extensions.code: UNAUTHENTICATED` until a bearer
+token from the `userLogin` or `studentLogin` mutation is supplied.
+
+- https://adventus.io/
+- https://equityzen.com/company/adventusio (the harvest source that surfaced this company)

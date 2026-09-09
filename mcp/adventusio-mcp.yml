@@ -1,0 +1,122 @@
+generated: '2026-09-09'
+method: derived
+source: graphql/adventusio.graphql
+provider: Adventus.io
+status: candidate
+summary: >-
+  Adventus.io ships NO MCP server. This is a DERIVED CANDIDATE tool list showing
+  what an MCP server over the existing GraphQL contract could expose. Nothing
+  here is published by the provider and no endpoint is asserted.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: probed
+  note: >-
+    Probed 2026-09-09. https://mcp.adventus.io/mcp 301-redirects to
+    app.adventus.io/mcp, which 404s -- mcp.adventus.io is the wildcard DNS
+    catch-all in front of the web application, not an MCP server.
+    https://api.adventus.io/mcp returns 404, https://adventus.io/mcp
+    301-redirects to the site root, and https://app.adventus.io/mcp returns 404.
+    No npm or PyPI package exists (see packages/adventusio-packages.yml). Both
+    the remote and the local-stdio distribution channels are genuinely empty.
+probes:
+- url: https://mcp.adventus.io/mcp
+  method: 'POST tools/list'
+  status: 301
+  result: redirects to https://app.adventus.io:443/mcp, which returns 404
+- url: https://api.adventus.io/mcp
+  method: 'POST tools/list'
+  status: 404
+  result: Express "Cannot POST /mcp"
+- url: https://adventus.io/mcp
+  method: 'POST tools/list'
+  status: 301
+  result: WordPress catch-all redirect to site root
+- url: https://app.adventus.io/mcp
+  method: 'POST tools/list'
+  status: 404
+  result: 'JSON body {"message": ""}'
+candidate_tools:
+- name: search_students
+  graphql: 'Query.students(page: Int!, keyword: String, status: String)'
+  description: List and keyword-search the student records visible to the caller.
+  auth_required: true
+  consequence: read
+- name: get_student
+  graphql: 'Query.student(id: Int)'
+  description: Fetch one student record with contact, academic and agent detail.
+  auth_required: true
+  consequence: read
+- name: create_student
+  graphql: 'Mutation.addStudent(student: StudentInput)'
+  description: Create a student record.
+  auth_required: true
+  consequence: write
+  reversible: false
+- name: update_student
+  graphql: 'Mutation.updateStudent(id: Int!, student: StudentInput)'
+  description: Update a student record.
+  auth_required: true
+  consequence: write
+  reversible: overwrite-only
+- name: list_student_orders
+  graphql: 'Query.orders(page: Int!, keyword: String, status/style/sort/filter: String)'
+  description: List applications (orders) and their current state.
+  auth_required: true
+  consequence: read
+- name: get_order_milestones
+  graphql: 'Query.orderMilestones(orderId: String)'
+  description: Read the progress milestones of one application.
+  auth_required: true
+  consequence: read
+- name: list_student_documents
+  graphql: 'Query.studentDocumentsV2(studentId: Int!, page: Int!, keyword: String)'
+  description: List documents attached to a student.
+  auth_required: true
+  consequence: read
+- name: get_course_stats
+  graphql: 'Query.courseStats(instituteId: Int!, search: String, paginate, sort)'
+  description: Course-level statistics for an institution.
+  auth_required: true
+  consequence: read
+- name: list_countries
+  graphql: 'Query.countries(hasCallingCode: Boolean)'
+  description: Reference list of countries.
+  auth_required: false
+  consequence: read
+- name: list_study_levels
+  graphql: 'Query.studyLevels'
+  description: Reference list of the 11 study levels.
+  auth_required: false
+  consequence: read
+- name: list_grading_systems
+  graphql: 'Query.gradingSystems(countryId: Int)'
+  description: Reference grading systems, optionally by country.
+  auth_required: false
+  consequence: read
+- name: list_intake_schedules
+  graphql: 'Query.intake_control_listSchedule(courseId, institutionId, paginate, sort)'
+  description: List course intake schedules.
+  auth_required: true
+  consequence: read
+- name: create_intake_schedule
+  graphql: 'Mutation.intake_control_createSchedule(input: intake_control_CreateScheduleInput!)'
+  description: Create an intake schedule.
+  auth_required: true
+  consequence: write
+  reversible: true
+  reversal: intake_control_cancelSchedule
+caveats:
+- >-
+  Every tool above is a projection of a GraphQL field that already exists in
+  graphql/adventusio.graphql. Input schemas would be inherited verbatim from the
+  schema's argument and input-object definitions.
+- >-
+  An agent operating this API cannot retry a failed write safely -- there is no
+  idempotency mechanism on any mutation
+  (conventions/adventusio-conventions.yml, coverage none).
+- >-
+  Writes other than intake_control_createSchedule have no reversal operation.

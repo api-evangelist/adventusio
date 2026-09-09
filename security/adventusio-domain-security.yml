@@ -1,0 +1,21 @@
+generated: '2026-09-09'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: adventus.io
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Nov 23 02:39:06 2026 GMT
+  hsts: false
+- host: api.adventus.io
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Jan 31 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: adventus.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

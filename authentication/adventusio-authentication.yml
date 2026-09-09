@@ -1,0 +1,128 @@
+generated: '2026-09-09'
+method: probed
+source: https://api.adventus.io/graphql (anonymous introspection + live unauthenticated probes, 2026-09-09)
+provider: Adventus.io
+api: adventusio-graphql
+summary: >-
+  Adventus.io does not publish an authentication guide. Everything below was
+  established by introspecting the live GraphQL endpoint and by observing what
+  the server returns to an unauthenticated caller. There is no OAuth 2.0
+  authorization server, no OpenID Connect discovery document and no API-key
+  provisioning surface reachable without a partner account: the only
+  credential issuers in the contract are two password-login mutations.
+schemes:
+- id: bearer-token
+  type: http
+  scheme: bearer
+  in: header
+  header: Authorization
+  description: >-
+    Session bearer token returned by the userLogin (recruiter / institution
+    staff) or studentLogin mutation. Both mutations return an auth payload type
+    (UserAuthPayload / StudentAuthPayload) and there are matching userLogout /
+    studentLogout mutations, so the token is server-revocable.
+  issued_by:
+  - mutation: userLogin
+    arguments: [email, password]
+    returns: UserAuthPayload
+    audience: recruiter, agent and institution staff accounts
+  - mutation: studentLogin
+    arguments: [email, password]
+    returns: StudentAuthPayload
+    audience: student accounts
+  revoked_by: [userLogout, studentLogout]
+  recovery:
+  - userForgotPassword / userResetPassword
+  - studentForgotPassword / studentResetPassword
+  evidence: graphql/adventusio.graphql
+  method: derived
+- id: connect-access-token
+  type: apiKey
+  in: query
+  parameter: accessToken
+  description: >-
+    A second, distinct credential. The Adventus Connect queries
+    pendingConnectCount(accessToken: String!) and
+    connectInvites(accessToken: String!) take the token as a REQUIRED GraphQL
+    ARGUMENT rather than an Authorization header. This is an invitation-scoped
+    token delivered out of band (ConnectSource enum values are EMAIL and WEB),
+    not the session bearer above.
+  note: >-
+    Passing a credential as a query argument means it can land in GraphQL query
+    logs, APM traces and error payloads that a header-borne token would not
+    reach. Recorded as observed, not endorsed.
+  evidence: graphql/adventusio.graphql
+  method: derived
+anonymous_surface:
+  description: >-
+    A subset of reference data answers with no credential at all. Confirmed by
+    live unauthenticated POST on 2026-09-09.
+  verified: probed
+  operations:
+  - field: countries
+    http_status: 200
+    result: full country list returned
+  - field: studyLevels
+    http_status: 200
+    result: 11 study levels returned
+  - field: languages
+    http_status: 200
+    result: schema-confirmed; same anonymous class
+  - field: gradingSystems
+    http_status: 200
+    result: schema-confirmed; same anonymous class
+  - field: __schema
+    http_status: 200
+    result: full introspection returned (99 types)
+gated_surface:
+  description: >-
+    Every student, order, institution, document, messaging and statistics field
+    is gated. The server answers HTTP 200 with a GraphQL errors[] entry rather
+    than an HTTP 401.
+  verified: probed
+  observed:
+  - field: students
+    http_status: 200
+    graphql_error_code: UNAUTHENTICATED
+    message: '401: Unauthorized'
+  - field: myAgent
+    http_status: 200
+    graphql_error_code: UNAUTHENTICATED
+    message: '401: Unauthorized'
+  - field: institution
+    http_status: 200
+    graphql_error_code: UNAUTHENTICATED
+    message: '401: Unauthorized'
+discovery_documents_absent:
+  note: >-
+    Probed 2026-09-09 on adventus.io, www.adventus.io, api.adventus.io,
+    app.adventus.io and blog.adventus.io. See
+    well-known/adventusio-well-known.yml for the full status table.
+  paths:
+  - path: /.well-known/openid-configuration
+    result: no host served a document
+  - path: /.well-known/oauth-authorization-server
+    result: no host served a document
+  - path: /.well-known/oauth-protected-resource
+    result: no host served a document
+oauth_scopes: none
+mtls: false
+transport:
+  tls_minimum_observed: TLSv1.2
+  hsts_on_api_host: true
+  hsts_max_age: 2592000
+  hsts_include_subdomains: true
+  note: >-
+    HSTS observed directly on the POST /graphql response from api.adventus.io
+    on 2026-09-09 (strict-transport-security max-age=2592000; includeSubdomains).
+    The domain-security probe records hsts null for that host because it reads
+    the 404 root, not the GraphQL path.
+  provider_claim: >-
+    "All communications are encrypted via industry standard HTTPS/TLS (TLS 1.2
+    or higher)" -- https://adventus.io/recruiters/security/
+gaps:
+- No published authentication documentation of any kind.
+- No token lifetime, refresh mechanism or expiry semantics stated anywhere in the
+  contract or on the public site.
+- No scope, role or permission model exposed in the schema.
+- Credential provisioning requires a partner account; there is no self-serve API key.

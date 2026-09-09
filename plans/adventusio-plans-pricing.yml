@@ -1,0 +1,66 @@
+generated: '2026-09-09'
+method: searched
+source: https://adventus.io/pricing-recruiters-new/
+provider: Adventus.io
+summary: >-
+  Adventus.io does not sell API access and publishes no API pricing. The
+  published pricing is a commission model for recruitment partners: platform
+  access is free and Adventus takes an administrative fee out of the commission
+  a recruiter earns on a placed student. There is no subscription tier, no seat
+  price, no call quota and no metered API rate. Institution pricing is a
+  separate, unpriced "contact us" page.
+pricing_model: commission
+api_pricing_published: false
+currency: null
+billing_period: null
+plan_count: 2
+plans:
+- name: Free (standard)
+  price: 0
+  currency: USD
+  billing_period: none
+  description: >-
+    Default recruiter partner plan. Platform access carries no subscription
+    cost. The recruiter earns 80% commission on placements and Adventus applies
+    a 2.95% administrative fee.
+  commission_share: '80%'
+  administrative_fee: '2.95%'
+  quota:
+    applications_per_student: 5
+    note: >-
+      The page states the per-student application limit varies by recruiter
+      location; 5 is the figure given.
+  included:
+  - Access to the institution catalogue (1,500+ institutions across USA, UK, Australia, Canada and Europe)
+  - Application management tools
+  - Support and training resources
+  api_access: not stated
+  source: https://adventus.io/pricing-recruiters-new/
+- name: Premium Institution Partner programs
+  price: 0
+  currency: USD
+  billing_period: none
+  description: >-
+    Applies to placements at Premium Institution Partners rather than being a
+    separate subscription. The recruiter earns 100% commission and Adventus
+    applies a 4.95% administrative fee. The page states this covers 2,000+
+    premium programs.
+  commission_share: '100%'
+  administrative_fee: '4.95%'
+  api_access: not stated
+  source: https://adventus.io/pricing-recruiters-new/
+institution_pricing:
+  published: false
+  page: https://adventus.io/pricing-institutions/
+  status: 200
+  note: >-
+    The institution-side page is a contact/enquiry surface. No prices, tiers or
+    quotas are stated on it.
+notes:
+- >-
+  The page explicitly states subscription tiers were removed: "to simplify our
+  offerings, we have removed all subscription tiers. All recruiter partners can
+  enjoy our free subscription plan, earning 80% commission."
+- >-
+  Because API access is not a purchasable product, there is no price a developer
+  can pay to reach api.adventus.io -- credentials come with a partner account.

@@ -1,0 +1,237 @@
+generated: '2026-09-09'
+method: derived
+source: graphql/adventusio.graphql
+provider: Adventus.io
+api: adventusio-graphql
+summary: >-
+  Entity graph derived from the live GraphQL schema -- 64 object types, 15 input
+  types, 5 enums and 2 custom scalars (JSON, Upload). Relationships below are
+  read from typed field references and from explicit id-reference fields; nothing
+  is inferred from naming alone unless marked so. Adventus.io publishes no object
+  reference, so there is no id-prefix scheme or domain glossary to enrich this with.
+identifier_scheme:
+  primary: 'Int (auto-increment) on almost every entity'
+  exceptions:
+  - entity: ConnectInvite
+    id_type: 'ID (String)'
+  - entity: Application
+    field: orderId
+    id_type: String
+  - entity: OrderSummary
+    field: applicationId
+    id_type: String
+  note: >-
+    No prefixed, typed or globally unique identifiers (no obj_xxx style). Integer
+    ids are scoped per entity, so an id is only meaningful together with its type.
+core_entities:
+- name: Student
+  role: The central record. Personal details, contact, residence, academic achievement,
+    documents, notes, activities and order summary all hang off it.
+  key_operations:
+    read: [student, students, myStudentProfile]
+    write: [addStudent, updateStudent, updateMyStudentProfile, updateStudentAcademicAchievement, updateMyAcademicAchievement]
+- name: Institution
+  role: Education provider publishing courses and intakes.
+  key_operations:
+    read: [institution, instituteStats, courseStats]
+    write: []
+  note: Read-only through this API; institution records are not writable by a caller.
+- name: User
+  role: Recruiter, agent or institution staff account. Carries a Tenant.
+  key_operations:
+    read: [user, myAgent, myAccountManagers, myTeamMembers]
+- name: Tenant
+  role: Multi-tenancy boundary. Every User belongs to one; intake_control_Schedule carries tenantId.
+- name: StudentsOrders / Application / OrderSummary
+  role: An application a student makes to a course at an institution, and its progress.
+  key_operations:
+    read: [orders, orderMilestones, studentOrderSummary, myOrderSummary]
+- name: Milestone / MilestoneDetails / CurrentMilestone
+  role: Application progress stages returned by orderMilestones.
+- name: StudentDocument
+  role: Uploaded file attached to a student, classified by StudentDocumentType within a StudentDocumentSection and a StudentDocumentCategory.
+  key_operations:
+    read: [studentDocuments, studentDocumentsV2, myDocuments, myDocumentsV2, studentDocumentTypes, myDocumentTypes]
+    write: [uploadStudentDocument, uploadMyDocument, deleteStudentDocument]
+- name: ConnectInvite
+  role: Adventus Connect -- an institution invites a student. Carries ConnectStudent and ConnectInstitution projections.
+  key_operations:
+    read: [connectInvites, pendingConnectCount]
+    write: [confirmConnectInvite]
+- name: intake_control_Schedule
+  role: Course intake scheduling. A separately namespaced subsystem with its own pagination and sort inputs.
+  key_operations:
+    read: [intake_control_listSchedule, intake_control_getStatus, intake_control_getIntakeForCourse]
+    write: [intake_control_createSchedule, intake_control_cancelSchedule]
+reference_entities:
+- Country
+- Language
+- StudyLevel
+- GradingSystem
+- GradingSystemTable
+- GradingSystemScore
+- StudentNoteType
+- StudentDocumentType
+- StudentDocumentSection
+- StudentDocumentCategory
+- TermsAndCondition
+messaging_entities:
+- Message
+- News
+- Alert
+- NotificationSetting
+- UnreadNotificationCount
+- DeviceToken
+- StudentMessage
+- Threads
+- MessageThreads
+- ThreadMessage
+- ThreadMessageList
+relationships:
+- from: Student
+  to: Country
+  kind: belongs_to
+  via: country
+  binding: typed-field
+- from: Student
+  to: Country
+  kind: belongs_to
+  via: residenceCountry
+  binding: typed-field
+- from: Student
+  to: Country
+  kind: belongs_to
+  via: gradingCountry
+  binding: typed-field
+- from: Student
+  to: Language
+  kind: belongs_to
+  via: preferredLanguage
+  binding: typed-field
+- from: Student
+  to: User
+  kind: belongs_to
+  via: agent
+  binding: typed-field
+- from: Student
+  to: StudyLevel
+  kind: belongs_to
+  via: gradingStudyLevel
+  binding: typed-field
+- from: Student
+  to: GradingSystem
+  kind: belongs_to
+  via: gradingSystem
+  binding: typed-field
+- from: Student
+  to: StudentNote
+  kind: has_many
+  via: notes
+  binding: typed-field
+- from: Student
+  to: StudentActivity
+  kind: has_many
+  via: activities
+  binding: typed-field
+- from: Student
+  to: OrderSummaryList
+  kind: has_many
+  via: orderSummary
+  binding: typed-field
+- from: Student
+  to: StudentDocument
+  kind: has_many
+  via: 'studentDocuments(studentId:)'
+  binding: id-reference-query
+- from: User
+  to: Tenant
+  kind: belongs_to
+  via: tenant
+  binding: typed-field
+- from: StudentsOrders
+  to: Application
+  kind: has_many
+  via: studentOrders
+  binding: typed-field
+- from: StudentsOrders
+  to: Student
+  kind: belongs_to
+  via: studentId
+  binding: id-reference
+- from: Application
+  to: Student
+  kind: belongs_to
+  via: studentId
+  binding: id-reference
+- from: OrderSummary
+  to: Milestone
+  kind: belongs_to
+  via: milestone
+  binding: typed-field
+- from: OrderSummary
+  to: Country
+  kind: belongs_to
+  via: countryDetail
+  binding: typed-field
+- from: OrderSummary
+  to: Country
+  kind: belongs_to
+  via: country_id
+  binding: id-reference
+- from: OrderSummary
+  to: ThreadMessageList
+  kind: has_many
+  via: messages
+  binding: typed-field
+- from: StudentDocument
+  to: StudentDocumentType
+  kind: belongs_to
+  via: documentType
+  binding: typed-field
+- from: ConnectInvite
+  to: ConnectStudent
+  kind: has_one
+  via: student
+  binding: typed-field
+- from: ConnectInvite
+  to: ConnectInstitution
+  kind: has_one
+  via: institution
+  binding: typed-field
+- from: CourseStats
+  to: Institution
+  kind: belongs_to
+  via: instituteId
+  binding: id-reference
+- from: intake_control_Schedule
+  to: Institution
+  kind: belongs_to
+  via: institutionId
+  binding: id-reference
+- from: intake_control_Schedule
+  to: User
+  kind: belongs_to
+  via: userId
+  binding: id-reference
+- from: intake_control_Schedule
+  to: Tenant
+  kind: belongs_to
+  via: tenantId
+  binding: id-reference
+- from: intake_control_Schedule
+  to: intake_control_Country
+  kind: has_many
+  via: countries
+  binding: typed-field
+observations:
+- >-
+  There is no Course object type in the schema even though courseId is referenced
+  from CourseStats, OrderSummary and intake_control_Schedule. Course records are
+  read through the search surface of the web application, not this API.
+- >-
+  The intake_control_* namespace duplicates pagination, sort, country and error
+  types rather than reusing the shared ones. It reads as a separately built
+  service exposed through the same gateway.
+- >-
+  Institution is read-only here; there is no mutation that writes an institution,
+  course or intake other than the intake_control scheduling pair.

@@ -1,0 +1,185 @@
+generated: '2026-09-09'
+method: probed
+source: live probes of the named /.well-known/ path list on every host this record knows
+note: >-
+  Every named path was probed on all six hosts. NOTHING was served: adventus.io
+  and www.adventus.io 301-redirect every /.well-known/ request back to the site
+  root (a WordPress catch-all, not a document), and app.adventus.io,
+  blog.adventus.io and api.adventus.io return real 404s. No WellKnown,
+  SecurityTxt or APICatalog pointer is emitted in apis.yml, because none of
+  these documents exists -- this file records a verified absence.
+hosts:
+- host: adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/openid-configuration
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/oauth-authorization-server
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/oauth-protected-resource
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/api-catalog
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/ai-plugin.json
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/agent-card.json
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /.well-known/agent.json
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+  - path: /llms.txt
+    status: 301
+    file: null
+    note: redirects to https://adventus.io/ -- not a document
+- host: www.adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 301
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 301
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 301
+    file: null
+  - path: /.well-known/api-catalog
+    status: 301
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 301
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 301
+    file: null
+  - path: /.well-known/agent.json
+    status: 301
+    file: null
+  - path: /llms.txt
+    status: 301
+    file: null
+- host: api.adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  - path: /llms.txt
+    status: 404
+    file: null
+- host: app.adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  - path: /llms.txt
+    status: 404
+    file: null
+- host: blog.adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  - path: /llms.txt
+    status: 404
+    file: null
+- host: signup.adventus.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+  - path: /llms.txt
+    status: 404
+    file: null
+agent_card_found: false
+security_txt_found: false
+api_catalog_found: false

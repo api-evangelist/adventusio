@@ -1,0 +1,44 @@
+generated: '2026-09-09'
+method: generated
+source: graphql/adventusio.graphql
+provider: Adventus.io
+api: adventusio-graphql
+endpoint: https://api.adventus.io/graphql
+summary: >-
+  Packaged agent operating instructions for the Adventus.io GraphQL API. Every
+  operation named in every skill was read from the provider's own live schema
+  (graphql/adventusio.graphql, retrieved by anonymous introspection on
+  2026-09-09); none is invented. Adventus.io publishes no skills, no AGENTS.md
+  and no developer documentation of any kind, so these were generated to close
+  that gap and are marked accordingly.
+provider_published_skills: false
+provider_published_agents_md: false
+skills:
+- name: adventusio-authenticate
+  file: adventusio-authenticate.md
+  description: Obtain and use a bearer token, and know which fields are anonymous.
+  operations: [userLogin, studentLogin, userLogout, studentLogout, userForgotPassword, userResetPassword]
+- name: adventusio-manage-students
+  file: adventusio-manage-students.md
+  description: Create, find, update and enrich student records safely.
+  operations: [students, student, addStudent, updateStudent, updateStudentAcademicAchievement, addStudentNote, studentNotes, studentNoteTypes, studentActivities, studyLevels, gradingSystems]
+- name: adventusio-track-applications
+  file: adventusio-track-applications.md
+  description: Read applications (orders), milestones, statistics and application threads.
+  operations: [orders, orderMilestones, studentOrderSummary, myOrderSummary, instituteStats, courseStats, threadMessageList, sendThreadMessage, markThreadReadStatus]
+- name: adventusio-handle-documents
+  file: adventusio-handle-documents.md
+  description: Upload, list and delete student documents, including the V1/V2 split.
+  operations: [studentDocumentTypes, studentDocuments, studentDocumentsV2, myDocumentTypes, myDocuments, myDocumentsV2, uploadStudentDocument, uploadMyDocument, deleteStudentDocument]
+- name: adventusio-intake-scheduling
+  file: adventusio-intake-scheduling.md
+  description: Read intake availability and create or cancel intake schedules — the only reversible write.
+  operations: [intake_control_hello, intake_control_listSchedule, intake_control_getStatus, intake_control_getIntakeForCourse, intake_control_createSchedule, intake_control_cancelSchedule]
+cross_cutting_rules:
+- endpoint: 'POST https://api.adventus.io/graphql only; GET returns HTTP 400.'
+- errors: 'Failures arrive as HTTP 200 with errors[].extensions.code. Read the code, not the status.'
+- idempotency: 'None. No mutation is safely retryable — search before every retry.'
+- reversibility: 'Only intake_control_cancelSchedule reverses a write, and no window is published.'
+- pagination: 'Three incompatible conventions coexist. Check each field''s arguments in the SDL.'
+- rate_limits: 'None published and no rate-limit headers returned. Throttle conservatively.'
+- tracing: 'No request id in headers or in the error envelope — a failure cannot be cited to support.'

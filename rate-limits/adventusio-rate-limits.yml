@@ -1,0 +1,54 @@
+generated: '2026-09-09'
+method: probed
+source: https://api.adventus.io/graphql (live response headers observed 2026-09-09) + adventus.io site search
+provider: Adventus.io
+api: adventusio-graphql
+limit_count: 0
+documented: false
+summary: >-
+  Adventus.io publishes no rate limits and the API returns no rate-limit
+  signal. This is an honest zero from a live observation, not an unchecked gap:
+  the full response header set was captured from a successful POST to the
+  GraphQL endpoint and contains no limit, remaining, reset or retry field.
+limits: []
+response_headers:
+  observed: []
+  checked:
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - RateLimit-Limit
+  - RateLimit-Remaining
+  - RateLimit-Reset
+  - RateLimit-Policy
+  - Retry-After
+  headers_actually_returned:
+  - date
+  - content-type
+  - content-length
+  - server
+  - x-powered-by
+  - access-control-allow-origin
+  - etag
+  - x-frame-options
+  - strict-transport-security
+  - x-xss-protection
+  - x-content-type-options
+  - content-security-policy
+  - content-security-policy-report-only
+  - referrer-policy
+  - expect-ct
+exhaustion_status_code: unknown
+graphql_cost_controls:
+  query_depth_limit: not documented
+  query_complexity_limit: not documented
+  persisted_queries: not offered
+  note: >-
+    No depth or complexity limit is advertised. Introspection answers
+    anonymously, which means an unauthenticated caller can retrieve the entire
+    99-type schema, but that says nothing about whether execution is throttled.
+gaps:
+- No published rate limits for any scope (per key, per account, per endpoint).
+- No runtime rate-limit headers, so a client cannot back off before being cut off.
+- No documented status code or error extension for exhaustion.
+- No Retry-After signal.

@@ -1,0 +1,82 @@
+generated: '2026-09-09'
+method: derived
+source: graphql/adventusio.graphql + probes of adventus.io, status.adventus.io and statuspage.io (2026-09-09)
+provider: Adventus.io
+api: adventusio-graphql
+summary: >-
+  Adventus.io publishes no versioning policy, no deprecation policy, no SLA,
+  no changelog and no status page. The only lifecycle signal in the whole
+  surface is in-schema field naming.
+versioning:
+  transport_versioning: none
+  endpoint: https://api.adventus.io/graphql
+  policy_published: false
+  in_schema_versioning:
+    present: true
+    mechanism: V2 field-name suffix
+    pairs:
+    - v1: studentDocuments
+      v2: studentDocumentsV2
+      difference: >-
+        studentDocuments returns a bare [StudentDocument]; studentDocumentsV2
+        returns a StudentDocumentList wrapper and adds page and keyword arguments.
+    - v1: myDocuments
+      v2: myDocumentsV2
+      difference: same shape change, on the caller's own documents.
+    note: >-
+      Neither v1 field is marked @deprecated, so the contract gives a client no
+      signal that the unsuffixed field is superseded. A client reading only the
+      schema cannot tell which is current.
+  upstream_rest_version: 'app.adventus.io/api/v2/ -- visible only because the GraphQL error envelope echoes the origin URL'
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_in_schema:
+    count: 0
+    note: >-
+      Zero fields in the 99-type schema carry the @deprecated directive, even
+      though the V2 pairs above show fields have in fact been superseded. The
+      GraphQL @deprecated directive is available (it is in the schema's directive
+      list) and simply is not used.
+status_page:
+  published: false
+  probes:
+  - url: https://status.adventus.io
+    status: 000
+    result: 'TLS failure -- certificate presents no subject name matching status.adventus.io'
+  - url: https://adventus.statuspage.io
+    status: 200
+    result: >-
+      Atlassian's own Statuspage marketing page, not an Adventus status page.
+      Title is "Real-Time Incident Communication with Statuspage | Atlassian".
+      Rejected as a false positive.
+  - url: https://adventusio.statuspage.io
+    status: 200
+    result: same Atlassian marketing page. Rejected as a false positive.
+sla:
+  published: false
+  uptime_commitment: null
+  note: >-
+    The recruiter security page claims "Service clustering and network
+    redundancies help eliminate single points of failure" but states no uptime
+    target, credit or measurement window.
+changelog:
+  published: false
+  note: >-
+    No dated API changelog or release-notes surface exists. blog.adventus.io is
+    a marketing/news blog (HubSpot-hosted), not a product changelog, and the
+    site knowledge base at https://adventus.io/knowledge-base/ returns 200 with
+    "Our knowledge base is coming soon."
+maturity:
+  contract_discoverable: true
+  contract_documented: false
+  note: >-
+    The contract is machine-readable (open introspection) but undocumented. An
+    integrator gets the schema for free and gets nothing else.
+gaps:
+- No versioning policy, so a client has no stated expectation about breaking change.
+- No @deprecated usage despite demonstrable field supersession.
+- No status page, so an agent cannot check whether a failure is systemic.
+- No SLA and no changelog.

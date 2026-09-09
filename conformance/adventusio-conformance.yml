@@ -1,0 +1,146 @@
+generated: '2026-09-09'
+method: probed
+source: graphql/adventusio.graphql, live probes of https://api.adventus.io/graphql, https://adventus.io/recruiters/security/
+provider: Adventus.io
+summary: >-
+  Cross-cutting standards this provider's contract and public surface do and do
+  not conform to. Every `conforms: true` below is backed by something observed;
+  every `false` is a checked absence, not an assumption.
+conformance:
+- id: graphql
+  name: GraphQL (June 2018 / October 2021 spec)
+  conforms: true
+  evidence: >-
+    https://api.adventus.io/graphql answers a spec-compliant introspection query
+    with a full __schema document (99 types) and returns spec-shaped errors[]
+    with locations and path. Standard directives include, skip, deprecated and
+    specifiedBy are all present.
+  method: probed
+- id: graphql-over-http
+  name: GraphQL over HTTP
+  conforms: partial
+  evidence: >-
+    POST with application/json is supported and returns application/json. GET
+    with a query parameter is NOT supported -- GET https://api.adventus.io/graphql
+    returns HTTP 400 "GET query missing." Errors are returned with HTTP 200
+    rather than the status the origin produced, which is spec-legal but means
+    transport status carries no signal.
+  method: probed
+- id: graphql-multipart-request
+  name: GraphQL multipart request specification (file upload)
+  conforms: true
+  evidence: >-
+    The schema declares the Upload scalar and uses it on uploadStudentDocument
+    and uploadMyDocument, which is the standard multipart-request convention.
+  method: derived
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: >-
+    No authorization server. /.well-known/oauth-authorization-server and
+    /.well-known/oauth-protected-resource returned no document on any of the
+    five hosts probed. Authentication is an email/password login mutation
+    returning a bearer token.
+  method: probed
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: >-
+    /.well-known/openid-configuration returned no document on adventus.io (301
+    to site root), api.adventus.io (404), app.adventus.io (404),
+    www.adventus.io (301) or blog.adventus.io (404).
+  method: probed
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    The API is GraphQL and returns errors[] with extensions.code. No
+    application/problem+json is produced. See errors/adventusio-error-codes.yml.
+  method: probed
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt served no document on any of the five hosts
+    probed. See well-known/adventusio-well-known.yml.
+  method: probed
+- id: rfc8594
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: No Sunset or Deprecation header observed and no deprecation policy published.
+  method: probed
+- id: idempotency
+  name: Idempotency keys for unsafe requests
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header and no client-supplied request key on any of the
+    29 mutations. See conventions/adventusio-conventions.yml (coverage none).
+  method: derived
+- id: pagination
+  name: Consistent pagination
+  conforms: false
+  evidence: >-
+    Three incompatible pagination conventions coexist in one schema
+    (PaginationInput offset/limit, page: Int!, and loose offset/limit
+    arguments), with a fourth class of unpaginated list fields. No cursors, no
+    Relay connection shape.
+  method: derived
+- id: tls12
+  name: TLS 1.2 or higher
+  conforms: true
+  evidence: >-
+    TLSv1.2 negotiated on adventus.io and api.adventus.io (probed). The provider
+    states "All communications are encrypted via industry standard HTTPS/TLS
+    (TLS 1.2 or higher)" at https://adventus.io/recruiters/security/.
+  method: probed
+- id: hsts
+  name: HTTP Strict Transport Security
+  conforms: partial
+  evidence: >-
+    api.adventus.io returns strict-transport-security max-age=2592000;
+    includeSubdomains on the GraphQL endpoint. The adventus.io marketing host
+    returned no HSTS header.
+  method: probed
+- id: gdpr
+  name: EU General Data Protection Regulation
+  conforms: claimed
+  evidence: >-
+    "Privacy compliance program aligned with General Data Protection Regulation
+    regulations." -- https://adventus.io/recruiters/security/. This is the
+    provider's own claim; no certificate, attestation or DPA is published to
+    substantiate it, so it is recorded as claimed rather than true.
+  method: searched
+- id: soc2
+  name: SOC 2
+  conforms: false
+  evidence: >-
+    Not claimed anywhere. The security page names no third-party audit or
+    certification, and no trust center exists (probed).
+  method: searched
+- id: iso27001
+  name: ISO/IEC 27001
+  conforms: false
+  evidence: Not claimed anywhere on the public site.
+  method: searched
+domain_standard:
+  market: international education / student recruitment and admissions
+  detected: false
+  note: >-
+    REWARD-ONLY check, and this contract earns nothing on it. The schema
+    declares no education-sector interchange standard: there is no OneRoster or
+    Ed-Fi shape, no LTI claim, no CASA/CAS application-transfer schema, no
+    PESC/EDI or XML transcript vocabulary, no HESA or CommonApp identifier
+    scheme, no SCIM URN, and no OAI-PMH verb. Student, course, intake, grading
+    system and application are all bespoke Adventus types with integer
+    identifiers, so an institution that already speaks a sector standard needs a
+    bilateral connector to integrate. Checked against the schema itself, not
+    against marketing prose. Recorded as absent rather than invented.
+  candidates_checked:
+  - PESC (Postsecondary Electronic Standards Council) transcript / application schemas
+  - 1EdTech OneRoster
+  - 1EdTech LTI
+  - Ed-Fi Data Standard
+  - SCIM (urn:ietf:params:scim:schemas:*)
+  - OAI-PMH
+  - CASA / common application transfer schemas
+certifications_published: []

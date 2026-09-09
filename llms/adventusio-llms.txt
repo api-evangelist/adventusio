@@ -1,0 +1,81 @@
+# Adventus.io
+
+> generated: 2026-09-09
+> method: generated
+> source: API Evangelist profile of Adventus.io (all/adventusio) — built from the
+> provider's live GraphQL schema at https://api.adventus.io/graphql and its public
+> website. Adventus.io does not publish an llms.txt; /llms.txt returned 301 (site
+> root) on adventus.io and 404 on api.adventus.io, app.adventus.io and
+> blog.adventus.io when probed on 2026-09-09.
+
+Adventus.io operates an international student recruitment marketplace connecting
+education institutions, recruitment agents and students. Recruiters manage student
+records, documents, academic achievements, applications and orders in one place;
+institutions publish courses and intakes and receive applications back.
+
+## What an agent can and cannot do here
+
+- There is a real, machine-readable contract: a GraphQL API at
+  https://api.adventus.io/graphql with 47 queries and 30 mutations across 99 types.
+  Introspection answers anonymously, so the full schema is retrievable with no
+  credentials.
+- There is NO developer portal, NO getting-started guide, NO API reference, NO SDK,
+  NO CLI, NO sandbox and NO published rate limits. Credentials are issued with a
+  partner account, not self-serve.
+- Reference data (countries, languages, studyLevels, gradingSystems) answers
+  anonymously. Everything about students, orders, institutions, documents and
+  messaging returns a GraphQL error with extensions.code UNAUTHENTICATED until a
+  bearer token from the userLogin or studentLogin mutation is supplied.
+- Writes are NOT safely retryable. No mutation supports an idempotency key. Only
+  one write (intake_control_createSchedule) has a reversal operation
+  (intake_control_cancelSchedule), and no reversal window is stated anywhere.
+
+## API
+
+- [GraphQL endpoint](https://api.adventus.io/graphql): the single API surface.
+  POST only; GET returns 400. Errors arrive as HTTP 200 with errors[].
+
+## Machine-readable artifacts in this profile
+
+- [GraphQL schema (SDL)](graphql/adventusio.graphql): rendered from the provider's
+  own introspection response.
+- [Raw introspection response](graphql/adventusio-introspection.json): saved verbatim.
+- [Authentication](authentication/adventusio-authentication.yml): bearer token from
+  userLogin/studentLogin, plus the separate Adventus Connect accessToken argument.
+- [Error catalog](errors/adventusio-error-codes.yml): observed error envelope and codes.
+- [Conventions](conventions/adventusio-conventions.yml): pagination, versioning,
+  idempotency (none), reversibility, tracing (none).
+- [Data model](data-model/adventusio-data-model.yml): entity graph derived from the schema.
+- [Lifecycle](lifecycle/adventusio-lifecycle.yml): versioning and deprecation posture.
+- [Conformance](conformance/adventusio-conformance.yml): standards checked, including
+  the education-sector domain-standard check (none adopted).
+- [Rate limits](rate-limits/adventusio-rate-limits.yml): none published, none signalled.
+- [Plans and pricing](plans/adventusio-plans-pricing.yml): commission model, no API pricing.
+- [Packages](packages/adventusio-packages.yml): no first-party SDK in any registry.
+- [MCP](mcp/adventusio-mcp.yml): no server ships; derived candidate tool list only.
+- [Well-known probe](well-known/adventusio-well-known.yml): every named path, every host — all absent.
+- [Domain security](security/adventusio-domain-security.yml): TLS, HSTS, SPF, DMARC, DNSSEC, CAA.
+- [Agent skills](skills/_index.yml): operating instructions grounded in real schema fields.
+
+## Company
+
+- [Adventus.io](https://adventus.io/)
+- [Company](https://adventus.io/company/)
+- [Recruiters](https://adventus.io/recruiters/)
+- [Institutions](https://adventus.io/institutions/)
+- [Adventus Drive analytics](https://adventus.io/drive/)
+- [Pricing (recruiters)](https://adventus.io/pricing-recruiters-new/)
+- [Security](https://adventus.io/recruiters/security/)
+- [Sign up (recruiters)](https://adventus.io/recruiter-signup/)
+- [Log in](https://app.adventus.io/admin/login)
+- [Contact](https://adventus.io/contact-us/)
+- [Blog](https://blog.adventus.io/)
+- [Terms](https://adventus.io/website-terms/)
+- [Privacy](https://adventus.io/privacy-policy/)
+
+## Optional
+
+- [Institution directory](https://adventus.io/institution-directory/)
+- [Course search](https://adventus.io/search-course/)
+- [Mobile app](https://adventus.io/mobile-app/)
+- [Careers](https://adventus.io/careers/)

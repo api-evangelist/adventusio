@@ -1,0 +1,51 @@
+generated: '2026-09-09'
+method: searched
+source: registry.npmjs.org, pypi.org, api.github.com, adventus.io
+provider: Adventus.io
+official_sdk_count: 0
+package_count: 0
+summary: >-
+  Adventus.io ships no client libraries. Every registry and org below was
+  queried directly and returned nothing first-party. No SDKs pointer is emitted
+  in apis.yml, because there is no SDK to point at.
+packages: []
+registries_searched:
+- registry: npm
+  endpoint: https://registry.npmjs.org/-/v1/search?text=adventus
+  status: 200
+  result: >-
+    4 results, none first-party. The closest name match, `adventus` (version
+    1.1.0, published 2024-05-22), is an unrelated liturgical-calendar library
+    ("Get liturgical information about a given day") with no link to
+    adventus.io. Explicitly rejected -- a name collision, not this company.
+  official_hits: 0
+- registry: PyPI
+  endpoint: https://pypi.org/pypi/adventus/json
+  status: 404
+  result: no package
+  official_hits: 0
+- registry: GitHub organizations
+  endpoint: https://api.github.com/orgs/{adventus,adventusio,adventus-io}
+  status: 404
+  result: >-
+    No GitHub organization exists under any of the three plausible names, so
+    there is no public source repository, no published .proto, and no
+    provider-authored example code.
+  official_hits: 0
+- registry: Maven Central / NuGet / RubyGems / crates.io / pkg.go.dev / Packagist
+  status: not-searched-individually
+  result: >-
+    Not queried individually. With no GitHub organization, no developer portal
+    and no SDK links anywhere on adventus.io, there is no candidate name to
+    look up in these registries and no evidence pointing at any of them.
+mobile_applications:
+  note: >-
+    https://adventus.io/mobile-app/ (HTTP 200) markets a first-party mobile app
+    for recruiters and students, and the schema carries registerDeviceToken and
+    a DeviceToken type for push notifications. A shipped mobile app is not a
+    client SDK; it is not recorded as a package.
+gaps:
+- No first-party SDK in any language.
+- No public source repository or GitHub organization.
+- No code samples published anywhere on the public site.
+- Integrators must hand-write a GraphQL client against the introspected schema.

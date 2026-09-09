@@ -1,0 +1,182 @@
+generated: '2026-09-09'
+method: derived
+source: graphql/adventusio.graphql (+ live header and error observation of https://api.adventus.io/graphql, 2026-09-09)
+provider: Adventus.io
+api: adventusio-graphql
+summary: >-
+  Cross-cutting runtime semantics for the Adventus.io GraphQL API. Adventus.io
+  publishes no conventions, style guide or integration guide, so every statement
+  here is derived from the live schema or observed on the wire. Where a
+  convention does not exist, that is recorded as an absence rather than filled in.
+transport:
+  protocol: GraphQL over HTTP
+  endpoint: https://api.adventus.io/graphql
+  methods: [POST]
+  get_supported: false
+  get_behavior: 'GET https://api.adventus.io/graphql returns HTTP 400 "GET query missing."'
+  content_type: application/json
+  server_banner: nginx / Express
+  cors: 'access-control-allow-origin: *'
+  upstream_origin: https://app.adventus.io/api/v2/ (disclosed by the API''s own error payloads)
+authentication:
+  style: bearer token in the Authorization header
+  detail: authentication/adventusio-authentication.yml
+  anonymous_reference_data: true
+  second_credential: >-
+    Adventus Connect queries take accessToken as a GraphQL argument rather than
+    a header. See the authentication artifact.
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  header: null
+  retention: null
+  note: >-
+    No Idempotency-Key header, no client-supplied request key argument, and no
+    documented replay protection anywhere in the schema or on the site. All 29
+    real mutations (excluding the "_" placeholder) are unprotected against
+    retry. Re-sending addStudent, addStudentNote, sendStudentMessage,
+    sendThreadMessage, uploadStudentDocument or intake_control_createSchedule
+    after a timeout will create a duplicate record; there is no published way
+    for a client to make a write safely retryable.
+  agent_impact: >-
+    An agent that retries a failed write on this API cannot know whether the
+    first attempt landed.
+reversibility:
+  grade: documented
+  note: >-
+    A reversal path exists for exactly one write family and the provider states
+    no window for it or for any other mutation. Grade is `documented`, not
+    `verified`, because no reversal window is published anywhere.
+  surfaces:
+  - write: intake_control_createSchedule
+    reversal: intake_control_cancelSchedule
+    reversal_kind: cancel
+    window_stated: false
+    window: null
+    docs: null
+    confidence: high
+  - write: confirmConnectInvite (status ACCEPT)
+    reversal: null
+    reversal_kind: none
+    note: >-
+      confirmConnectInvite takes a ConnectActionInput of ACCEPT or DECLINE, so a
+      caller can decline an invitation, but there is no operation that reverses
+      an acceptance once made.
+    window_stated: false
+  - write: addStudent / updateStudent / updateMyStudentProfile
+    reversal: null
+    reversal_kind: overwrite-only
+    note: >-
+      Records are mutable via updateStudent, but no undo, revision history or
+      restore operation exists, and no prior-state read is offered, so a caller
+      cannot restore what it overwrote unless it captured the value first.
+    window_stated: false
+  - write: uploadStudentDocument / uploadMyDocument
+    reversal: deleteStudentDocument
+    reversal_kind: delete
+    window_stated: false
+    note: >-
+      deleteStudentDocument removes an uploaded document, but it reverses the
+      upload rather than restoring a deleted one -- there is no restore or
+      trash/undelete operation, so a delete is terminal.
+    confidence: high
+  - write: addStudentNote / sendStudentMessage / sendThreadMessage
+    reversal: null
+    reversal_kind: none
+    note: No edit, retract, or delete operation exists for notes or messages.
+    window_stated: false
+  irreversible_writes:
+  - deleteStudentDocument
+  - addStudentNote
+  - sendStudentMessage
+  - sendThreadMessage
+dry_run_mode:
+  supported: false
+  note: No preview, validate-only or simulate argument appears anywhere in the schema.
+pagination:
+  consistent: false
+  note: >-
+    The API uses TWO incompatible pagination conventions and offers neither
+    cursors nor a Relay connection shape. A client must learn which style each
+    field takes from the schema.
+  styles:
+  - id: offset-limit-input
+    shape: 'pagination: PaginationInput { offset: Int!, limit: Int! }'
+    fields: [myMessages, myNews, myAlerts, connectInvites]
+    variant: 'courseStats uses the same input under the argument name `paginate`'
+  - id: page-number
+    shape: 'page: Int! (1-based)'
+    fields: [students, orders, studentDocumentsV2, myDocumentsV2]
+  - id: offset-limit-args
+    shape: 'offset: Int, limit: Int (loose arguments, not an input object)'
+    fields: [threadMessageList]
+  - id: none
+    shape: unpaginated list
+    fields: [countries, languages, studyLevels, gradingSystems, studentNotes, studentActivities, studentMessages, myAccountManagers, myTeamMembers, studentDocuments, myDocuments]
+  response_metadata:
+    type: PaginationResponse
+    note: >-
+      List wrapper types (StudentList, StudentDocumentList, CourseStatsList,
+      ConnectInviteList, ThreadMessageList, OrderSummaryList) carry the page
+      metadata. Unwrapped list fields return a bare array with no total count.
+sorting:
+  input: 'SortInput { fieldName: String!, direction/order }'
+  enum: 'SortOrder { ASC, DESC }'
+  fields: [courseStats, connectInvites]
+  note: >-
+    The intake_control namespace defines its own parallel
+    intake_control_SortOrder and intake_control_PaginationInput rather than
+    reusing the shared ones -- the surface is stitched from two teams.
+filtering:
+  note: >-
+    Ad hoc. `keyword: String` free-text search on students, orders,
+    studentDocumentsV2, myDocumentsV2, connectInvites and courseStats; `status`,
+    `style`, `sort` and `filter` on orders are untyped String arguments with no
+    documented vocabulary.
+field_expansion:
+  supported: true
+  mechanism: native GraphQL field selection
+  sparse_fieldsets: native
+metadata:
+  custom_fields: false
+  note: 'JSON scalar is used for gradingSystemScore and document `data` payloads.'
+request_tracing:
+  request_id_header: null
+  correlation_id: null
+  note: >-
+    No x-request-id, x-correlation-id or trace header observed on any response
+    from api.adventus.io, and no id is returned in the error envelope.
+versioning:
+  scheme: none-at-transport
+  note: >-
+    The GraphQL endpoint is unversioned -- there is no /v1 or /v2 path and no
+    version header. Versioning is done IN the schema by suffixing field names:
+    studentDocumentsV2 and myDocumentsV2 sit alongside studentDocuments and
+    myDocuments, with different return types (StudentDocumentList vs a bare
+    [StudentDocument]) and different pagination. The unsuffixed fields are not
+    marked @deprecated, so a client cannot tell from the contract which one is
+    current.
+  upstream_rest_version: 'app.adventus.io/api/v2/'
+  detail: lifecycle/adventusio-lifecycle.yml
+error_envelope:
+  format: graphql-errors
+  machine_code_path: errors[].extensions.code
+  detail: errors/adventusio-error-codes.yml
+rate_limit_signaling:
+  headers_observed: []
+  documented: false
+  detail: rate-limits/adventusio-rate-limits.yml
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header appeared on any response
+    observed, and no limits are published.
+file_upload:
+  scalar: Upload
+  spec: GraphQL multipart request specification
+  fields: [uploadStudentDocument, uploadMyDocument]
+introspection:
+  enabled: true
+  note: >-
+    Introspection answers anonymously in production. It is the only reason a
+    machine-readable contract exists for this provider at all -- and it is also
+    a design choice most providers disable. Recorded as observed on 2026-09-09.

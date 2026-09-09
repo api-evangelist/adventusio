@@ -1,0 +1,81 @@
+generated: '2026-09-09'
+method: probed
+source: https://api.adventus.io/graphql (live unauthenticated error responses observed 2026-09-09)
+provider: Adventus.io
+api: adventusio-graphql
+format: graphql-errors
+rfc9457: false
+summary: >-
+  Adventus.io publishes no error reference. This catalog records only error
+  shapes observed directly from the live endpoint. The API is GraphQL, so it
+  answers HTTP 200 even on failure and carries the condition in errors[]. The
+  extensions.code enum below is the machine-readable signal an agent must read;
+  the HTTP status is not.
+envelope:
+  transport_status_on_error: 200
+  shape: |
+    {
+      "errors": [
+        {
+          "message": "<human string>",
+          "locations": [ { "line": <int>, "column": <int> } ],
+          "path": [ "<field>" ],
+          "extensions": {
+            "code": "<machine code>",
+            "response": {
+              "url": "<upstream REST url>",
+              "status": <int>,
+              "statusText": "<string>",
+              "body": { "error": "<string>" }
+            }
+          }
+        }
+      ],
+      "data": { "<field>": null }
+    }
+  note: >-
+    A validation failure is the exception: it returns HTTP 400 with errors[] and
+    no data key. Everything else observed returned HTTP 200 with a null field.
+  leak_warning: >-
+    extensions.response echoes the UPSTREAM origin URL verbatim -- observed
+    values include https://app.adventus.io/api/v2/students?page=1&status[]=Active
+    and https://app.adventus.io/api/v2/student/agent. This is how the internal
+    REST v2 backend became publicly visible. Recorded as an observation of the
+    provider's error surface, not as a documented feature.
+error_types:
+- code: UNAUTHENTICATED
+  message: '401: Unauthorized'
+  transport_status: 200
+  upstream_status: 401
+  upstream_body: '{"error":"Unauthenticated."}'
+  meaning: >-
+    No bearer token, or an expired/invalid one, was presented for a field that
+    requires an authenticated partner or student session.
+  remediation: >-
+    Obtain a token from the userLogin or studentLogin mutation and send it as
+    Authorization: Bearer <token>.
+  observed_on:
+  - students
+  - myAgent
+  - institution
+  method: probed
+- code: GRAPHQL_VALIDATION_FAILED
+  message: 'Unknown argument "<arg>" on field "<Type>.<field>".'
+  transport_status: 400
+  meaning: >-
+    The query does not validate against the published schema -- unknown field,
+    unknown argument, or a type mismatch. Returned before execution, so no data
+    key is present.
+  remediation: >-
+    Validate the document against graphql/adventusio.graphql before sending.
+    Introspection is open, so a client can always fetch the current schema.
+  observed_on:
+  - students(pagination:) -- the correct argument is page
+  method: probed
+gaps:
+- No published error reference, code registry or remediation guide.
+- No stable application-level error codes beyond the two standard GraphQL
+  extensions.code values; business failures are not distinguishable by code.
+- No correlation / request id returned in the error envelope or in response
+  headers, so a caller cannot cite a failure back to support.
+- Not RFC 9457 (application/problem+json); the API is GraphQL only.
