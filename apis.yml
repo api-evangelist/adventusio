@@ -1,15 +1,13 @@
 aid: adventusio
 name: Adventus.io
-description: 'Adventus.io operates an international student recruitment marketplace
-  that connects education institutions, recruitment agents and students. Recruiters
-  manage student records, documents, academic achievements, applications and orders
-  through a single platform; institutions publish courses, intakes and admissions
-  criteria and receive applications back. The platform is backed by a live GraphQL
-  API at api.adventus.io/graphql (47 queries, 30 mutations) which fronts an internal
-  REST v2 origin, plus Adventus Drive analytics and Adventus Connect institution
-  invitations. There is no public developer portal: the schema is discoverable by
-  anonymous introspection but all student, order and institution data requires a
-  bearer token issued to a partner account.'
+description: 'Adventus.io operates an international student recruitment marketplace that connects education
+  institutions, recruitment agents and students. Recruiters manage student records, documents, academic
+  achievements, applications and orders through a single platform; institutions publish courses, intakes
+  and admissions criteria and receive applications back. The platform is backed by a live GraphQL API
+  at api.adventus.io/graphql (47 queries, 30 mutations) which fronts an internal REST v2 origin, plus
+  Adventus Drive analytics and Adventus Connect institution invitations. There is no public developer
+  portal: the schema is discoverable by anonymous introspection but all student, order and institution
+  data requires a bearer token issued to a partner account.'
 image: https://adventus.io/wp-content/uploads/2026/07/adv_favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/adventusio/refs/heads/main/apis.yml
 x-type: company
@@ -34,21 +32,18 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- aid: adventusio-graphql
+- aid: adventusio:adventusio-graphql
   name: Adventus.io GraphQL API
   position: Producing
-  description: 'The GraphQL API behind the Adventus.io recruiter and student
-    applications. Exposes 47 queries and 30 mutations across students, student
-    documents, academic achievements, notes, activities, messaging threads,
-    orders and order milestones, institutions, courses and course statistics,
-    study levels, grading systems, countries and languages, notifications,
-    Adventus Connect invitations, and the intake_control scheduling surface.
-    Authentication is a bearer token obtained from the userLogin (recruiter/staff)
-    or studentLogin mutation; reference data (countries, languages, studyLevels,
-    gradingSystems) answers anonymously. Introspection is open, so the full
-    contract is machine-readable without credentials, but Adventus.io publishes
-    no developer portal, no getting-started guide and no rate-limit or
-    versioning documentation.'
+  description: The GraphQL API behind the Adventus.io recruiter and student applications. Exposes 47 queries
+    and 30 mutations across students, student documents, academic achievements, notes, activities, messaging
+    threads, orders and order milestones, institutions, courses and course statistics, study levels, grading
+    systems, countries and languages, notifications, Adventus Connect invitations, and the intake_control
+    scheduling surface. Authentication is a bearer token obtained from the userLogin (recruiter/staff)
+    or studentLogin mutation; reference data (countries, languages, studyLevels, gradingSystems) answers
+    anonymously. Introspection is open, so the full contract is machine-readable without credentials,
+    but Adventus.io publishes no developer portal, no getting-started guide and no rate-limit or versioning
+    documentation.
   image: https://adventus.io/wp-content/uploads/2026/07/adv_favicon.png
   humanURL: https://adventus.io/
   baseURL: https://api.adventus.io/graphql
