@@ -1,0 +1,21 @@
+{
+  "repo": "adventusio",
+  "feeds": [
+    {
+      "source": "https://blog.adventus.io/",
+      "feed_url": "https://blog.adventus.io/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://adventus.io/contact-us/",
+      "feed_url": "https://adventus.io/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-13T13:00:00Z"
+}
