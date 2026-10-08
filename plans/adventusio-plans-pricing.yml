@@ -64,3 +64,22 @@ notes:
 - >-
   Because API access is not a purchasable product, there is no price a developer
   can pay to reach api.adventus.io -- credentials come with a partner account.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: Free (standard)
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Premium Institution Partner programs
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
