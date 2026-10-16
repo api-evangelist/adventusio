@@ -9,13 +9,6 @@
       "method": "discovered"
     },
     {
-      "source": "https://adventus.io/contact-us/",
-      "feed_url": "https://adventus.io/feed/",
-      "title": "",
-      "saved": 0,
-      "method": "discovered"
-    },
-    {
       "source": "https://blog.adventus.io/rss.xml",
       "feed_url": "https://blog.adventus.io/rss.xml",
       "title": "",
@@ -31,5 +24,5 @@
     }
   ],
   "post_count": 10,
-  "fetched": "2026-10-03T12:30:02Z"
+  "fetched": "2026-10-10T13:15:00Z"
 }
