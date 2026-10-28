@@ -64,29 +64,109 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Adventus.io operates an international student recruitment marketplace connecting education
-institutions, recruitment agents and students. Recruiters manage student records, documents,
-academic achievements, applications and orders through a single platform; institutions publish
-courses and intakes and receive applications back.
+Adventus.io operates an international student recruitment marketplace that connects education institutions, recruitment agents and students. Recruiters manage student records, documents, academic achievements, applications and orders through a single platform; institutions publish courses, intakes and admissions criteria and receive applications back. The platform is backed by a live GraphQL API at api.adventus.io/graphql (47 queries, 30 mutations) which fronts an internal REST v2 origin, plus Adventus Drive analytics and Adventus Connect institution invitations. There is no public developer portal: the schema is discoverable by anonymous introspection but all student, order and institution data requires a bearer token issued to a partner account.
 
-## API surface
+**Areas:** Company · Education · International Education · Student Recruitment · Marketplace · GraphQL · Higher Education · EdTech · Admissions · Analytics
 
-- **GraphQL** — `https://api.adventus.io/graphql`, 47 queries and 30 mutations across 99 types.
-  Anonymous introspection is enabled, so the full contract is machine-readable without
-  credentials; it is saved here as [`graphql/adventusio.graphql`](graphql/adventusio.graphql)
-  (SDL) and [`graphql/adventusio-introspection.json`](graphql/adventusio-introspection.json)
-  (the verbatim introspection response).
-- **No OpenAPI, no AsyncAPI, no gRPC, no WSDL, no MCP server and no agent card** were found. Each
-  was probed on every host this record knows; the results are recorded in
-  [`well-known/adventusio-well-known.yml`](well-known/adventusio-well-known.yml) and
-  [`mcp/adventusio-mcp.yml`](mcp/adventusio-mcp.yml).
-- **No developer portal, documentation, SDK, CLI, sandbox, changelog, status page or published
-  rate limits.** Credentials are issued with an Adventus partner account; there is no self-serve
-  API key.
+## Adventus.io on APIs.io
 
-Reference data (`countries`, `languages`, `studyLevels`, `gradingSystems`) answers anonymously.
-Everything else returns a GraphQL error with `extensions.code: UNAUTHENTICATED` until a bearer
-token from the `userLogin` or `studentLogin` mutation is supplied.
+Everything profiled for Adventus.io is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/adventusio/](https://apis.io/providers/adventusio/)** — or go straight to one of the APIs or properties below.
 
-- https://adventus.io/
-- https://equityzen.com/company/adventusio (the harvest source that surfaced this company)
+### APIs (1)
+
+- [Adventus.io GraphQL API](https://apis.io/apis/adventusio/adventusio-graphql/) — The GraphQL API behind the Adventus.io recruiter and student applications. Exposes 47 queries and 30 mutations across students, student documents, academic…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [adventusio-mcp.yml](https://apis.io/servers/adventusio/adventusio-mcp-yml/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Adventusio Authentication](https://apis.io/security/adventusio/adventusio-authentication/)
+- [Adventusio Domain Security](https://apis.io/security/adventusio/adventusio-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Adventusio Plans Pricing](https://apis.io/plans/adventusio/adventusio-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Adventusio Rate Limits](https://apis.io/rate-limits/adventusio/adventusio-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://adventus.io/)
+- [Pricing](https://adventus.io/pricing-recruiters-new/)
+- [Sign up](https://signup.adventus.io/)
+- [Support](https://adventus.io/contact-us/)
+- [Blog](https://blog.adventus.io/)
+- [Compliance](https://adventus.io/recruiters/security/)
+- [Terms of service](https://adventus.io/website-terms/)
+- [Privacy policy](https://adventus.io/privacy-policy/)
+
+## API Evangelist rating
+
+**Kin Score 28.1** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 35.1 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 16.1 |
+| Access clarity | 34.2 |
+
+**Agent readiness 21.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Education & Research
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/adventusio/](https://apis.io/providers/adventusio/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Adventus.io: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/adventusio/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
